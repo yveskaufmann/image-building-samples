@@ -17,7 +17,7 @@ jobs:
         env:
           BUILDKIT_INLINE_CACHE: 1
         run: |
-          docker build -t ghcr.io/yveskaufmann/kaniko-sample:with-docker-${GITHUB_SHA} \
+          docker build -t ghcr.io/yveskaufmann/kaniko-example:with-docker-${GITHUB_SHA} \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             with-docker
-          docker push ghcr.io/yveskaufmann/kaniko-sample:with-docker-${GITHUB_SHA}
+          docker push ghcr.io/yveskaufmann/kaniko-example:with-docker-${GITHUB_SHA}
