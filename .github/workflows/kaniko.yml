@@ -21,12 +21,12 @@ jobs:
       - name: Build with kaniko
         run: |
 
-          IMAGE=ghcr.io/yveskaufmann/kaniko-example
+          IMAGE=ghcr.io/yveskaufmann/kaniko-example/todo-app
           TAG=with-kaniko
 
           docker run \
             -v $HOME/.docker/config.json:/kaniko/.docker/config.json \
-            -v $(pwd)/with-docker:/workspace \
+            -v $(pwd)/todo-app:/workspace \
             gcr.io/kaniko-project/executor:v1.9.0 \
             --dockerfile /workspace/Dockerfile \
             --destination "${IMAGE}:${TAG}" \
@@ -47,22 +47,21 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
         run: |
-          IMAGE=ghcr.io/yveskaufmann/kaniko-example
+          IMAGE=ghcr.io/yveskaufmann/kaniko-example/todo-app
           TAG=with-docker
-
 
           docker build --target builder \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             --cache-from ${IMAGE}:${TAG}-builder \
             --tag ${IMAGE}:${TAG}-builder \
-            with-docker
+            todo-app
 
           docker build --target release \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             --cache-from ${IMAGE}:${TAG}-builder \
             --cache-from ${IMAGE}:${TAG} \
             --tag ${IMAGE}:${TAG} \
-            with-docker
+            todo-app
 
           docker push ${IMAGE}:${TAG}-builder
           docker push ${IMAGE}:${TAG}

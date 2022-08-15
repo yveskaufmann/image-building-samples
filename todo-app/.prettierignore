@@ -1,0 +1,7 @@
+*.py
+*.yaml
+*.yml
+nginx.conf
+
+*.dockerfile
+Dockerfile
