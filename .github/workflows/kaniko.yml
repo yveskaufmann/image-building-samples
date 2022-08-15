@@ -18,11 +18,26 @@ jobs:
       - uses: actions/checkout@v3
       - name: Log in the registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
       - name: Build with docker
         env:
           DOCKER_BUILDKIT: 1
         run: |
-          docker build -t ghcr.io/yveskaufmann/kaniko-example:with-docker-${GITHUB_SHA} \
-            --build-arg BUILDKIT_INLINE_CACHE=1 \
-            with-docker
-          docker push ghcr.io/yveskaufmann/kaniko-example:with-docker-${GITHUB_SHA}
+          IMAGE=ghcr.io/yveskaufmann/kaniko-example
+          TAG=with-docker-${GITHUB_SHA}
+
+          docker build -t ${IMAGE}:${TAG}-builder --target builder \
+            --build-arg BUILDKIT_INLINE_CACHE=1 with-docker
+
+          docker push ${IMAGE}:${TAG}-builder
+          docker tag  ${IMAGE}:${TAG}-builder ${IMAGE}:${TAG}-builder-latest
+          docker push ${IMAGE}:${TAG}-builder-latest
+
+          docker build -t ${IMAGE}:${TAG} \
+            --cache-from ${IMAGE}:${TAG}-builder \
+            --cache-from ${IMAGE}:${TAG}-latest \
+            --build-arg BUILDKIT_INLINE_CACHE=1 with-docker
+
+          docker push ${IMAGE}:${TAG}
+          docker tag  ${IMAGE}:${TAG} ${IMAGE}:${TAG}-latest
+          docker push ${IMAGE}:${TAG}-latest
