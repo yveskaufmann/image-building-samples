@@ -6,7 +6,7 @@ import { TodoController } from './todo/todo-controller';
 
 export class KoaApplication implements Application {
   private server!: Server;
-  private port = 8080;
+  private port = parseInt(process.env.HTTP_PORT as any, 10) || 8080;
 
   constructor() {}
 
