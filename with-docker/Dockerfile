@@ -12,8 +12,8 @@ FROM node:16-bullseye as release
 
 WORKDIR /app
 
-COPY --from=builder package.json .
-COPY --from=builder package-lock.json .
+COPY package.json .
+COPY package-lock.json .
 RUN npm ci --omit=dev
 
 COPY --from=builder dist dist/
