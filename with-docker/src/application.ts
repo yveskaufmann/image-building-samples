@@ -1,6 +1,7 @@
 import type { Server } from 'http';
 import { createKoaServer } from 'routing-controllers';
 import { Application } from './interface';
+import { ProbesController } from './probes/health-controller';
 import { TodoController } from './todo/todo-controller';
 
 export class KoaApplication implements Application {
@@ -11,7 +12,7 @@ export class KoaApplication implements Application {
 
   public async start(): Promise<void> {
     this.server = createKoaServer({
-      controllers: [TodoController],
+      controllers: [TodoController, ProbesController],
     });
 
     this.server.listen(this.port, () => {
