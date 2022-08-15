@@ -24,20 +24,24 @@ jobs:
           DOCKER_BUILDKIT: 1
         run: |
           IMAGE=ghcr.io/yveskaufmann/kaniko-example
-          TAG=with-docker-${GITHUB_SHA}
+          TAG=with-docker
 
-          docker build -t ${IMAGE}:${TAG}-builder --target builder \
-            --build-arg BUILDKIT_INLINE_CACHE=1 with-docker
+
+          docker build --target builder \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            --cache-from ${IMAGE}:${TAG}-builder \
+            --tag ${IMAGE}:${TAG}-builder \
+            with-docker
+
+          docker build --target release \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            --cache-from ${IMAGE}:${TAG}-builder \
+            --cache-from ${IMAGE}:${TAG} \
+            --tag ${IMAGE}:${TAG} \
+            with-docker
 
           docker push ${IMAGE}:${TAG}-builder
-          docker tag  ${IMAGE}:${TAG}-builder ${IMAGE}:${TAG}-builder-latest
-          docker push ${IMAGE}:${TAG}-builder-latest
-
-          docker build -t ${IMAGE}:${TAG} \
-            --cache-from ${IMAGE}:${TAG}-builder \
-            --cache-from ${IMAGE}:${TAG}-latest \
-            --build-arg BUILDKIT_INLINE_CACHE=1 with-docker
-
           docker push ${IMAGE}:${TAG}
-          docker tag  ${IMAGE}:${TAG} ${IMAGE}:${TAG}-latest
-          docker push ${IMAGE}:${TAG}-latest
+
+          docker tag  ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${GITHUB_SHA}
+          docker push ${IMAGE}:${TAG}-${GITHUB_SHA}
