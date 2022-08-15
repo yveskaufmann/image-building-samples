@@ -20,7 +20,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
       - name: Build with docker
         env:
-          BUILDKIT_INLINE_CACHE: 1
+          DOCKER_BUILDKIT: 1
         run: |
           docker build -t ghcr.io/yveskaufmann/kaniko-example:with-docker-${GITHUB_SHA} \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
