@@ -1,4 +1,4 @@
-import { BodyParam, Controller, Get, JsonController, Param, Post } from 'routing-controllers';
+import { BodyParam, Controller, Delete, Get, JsonController, Param, Post } from 'routing-controllers';
 import { Todo } from './entity';
 
 @JsonController()
@@ -24,7 +24,12 @@ export class TodoController {
   }
 
   @Get('/todos/:id')
-  getOne(@Param('id') id: number): Todo | undefined {
+  async getOne(@Param('id') id: number): Promise<Todo | undefined> {
     return this.todos.find((todo) => todo.id === id);
+  }
+
+  @Delete('/todos/:id')
+  async deleteOne(@Param('id') id: number): Promise<void> {
+    this.todos = this.todos.filter((todo) => todo.id !== id);
   }
 }
