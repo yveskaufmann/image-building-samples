@@ -9,6 +9,30 @@ on:
   workflow_dispatch:
 
 jobs:
+  build-with-kaniko:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in the registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+      - name: Build with kaniko
+        run: |
+
+          IMAGE=ghcr.io/yveskaufmann/kaniko-example
+          TAG=with-kaniko
+
+          docker run \
+            -v $HOME/.docker/config.json:/kaniko/.docker/config.json \
+            -v $(pwd)/with-docker:/workspace \
+            gcr.io/kaniko-project/executor:v1.9.0 \
+            --dockerfile /workspace/Dockerfile \
+            --destination "${IMAGE}:${TAG}" \
+            --context dir:///workspace \
+            --cache
+
   build-with-docker:
     runs-on: ubuntu-latest
     permissions:
