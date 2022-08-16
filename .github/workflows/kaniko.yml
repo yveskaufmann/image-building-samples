@@ -33,6 +33,26 @@ jobs:
             --context dir:///workspace \
             --cache
 
+  build-with-buildpack:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in the registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+      - name: Build with buildpack
+        run: |
+
+          IMAGE=ghcr.io/yveskaufmann/kaniko-example/todo-app
+          TAG=with-buildpack
+
+          pack build ${IMAGE}:${TAG}-${GITHUB_SHA} \
+            --cache-image ${IMAGE}:${TAG}-cache \
+            --builder paketobuildpacks/builder:base \
+            --publish
+
   build-with-docker:
     runs-on: ubuntu-latest
     permissions:
