@@ -51,6 +51,7 @@ jobs:
           TAG=with-buildpack
 
           pack build ${IMAGE}:${TAG}-${GITHUB_SHA} \
+            --path ./todo-app \
             --cache-image ${IMAGE}:${TAG}-cache \
             --builder paketobuildpacks/builder:base \
             --publish
