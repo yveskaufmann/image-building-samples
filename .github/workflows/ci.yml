@@ -21,7 +21,7 @@ jobs:
       - name: Build with kaniko
         run: |
 
-          IMAGE=ghcr.io/yveskaufmann/kaniko-example/todo-app
+          IMAGE=ghcr.io/${GITHUB_REPOSITORY}/kaniko/todo-app
           TAG=with-kaniko
 
           docker run \
@@ -47,7 +47,7 @@ jobs:
       - name: Build with buildpack
         run: |
 
-          IMAGE=ghcr.io/yveskaufmann/kaniko-example/todo-app
+          IMAGE=ghcr.io/${GITHUB_REPOSITORY}/buildpack/todo-app
           TAG=with-buildpack
 
           pack build ${IMAGE}:${TAG}-${GITHUB_SHA} \
@@ -70,7 +70,7 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
         run: |
-          IMAGE=ghcr.io/yveskaufmann/kaniko-example/todo-app
+          IMAGE=ghcr.io/${GITHUB_REPOSITORY}/docker/todo-app
           TAG=with-docker
 
           docker build --target builder \
